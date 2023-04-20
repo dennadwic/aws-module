@@ -33,13 +33,15 @@ resource "aws_instance" "jenkins" {
   }
 
   provisioner "file" {
-    source = "dependency-jenkins.sh"
-    destination = "../bash/dependency-jenkins.sh"
+    source = "../bash/dependency-jenkins.sh"
+    destination = "/tmp/dependency-jenkins.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo chmod +x /bash/dependency-jenkins.sh",
+      "sudo chmod +x /tmp/dependency-jenkins.sh",
+      "cd /tmp",
+      "sed -i -e 's/\r$//' dependency-jenkins.sh",
       "./dependency-jenkins.sh",
     ]
   }
