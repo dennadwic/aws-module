@@ -46,7 +46,20 @@ resource "aws_instance" "jenkins" {
     ]
   }
 
+  provisioner "local-exec" {
+    command = "ansible-playbook jenkins.yml -i /ansible/inventory --private-key=D:/StudiDevOps/AWS/SSH/aws-key"
+  }
+
   tags = {
     Name = "Jenkins"
   }
+}
+
+#Generate inventory file
+resource "local_file" "inventory" {
+  filename = "../ansible/inventory"
+  content = <<EOF
+  [jenkins]
+  ${aws_instance.jenkins.public_ip}
+  EOF
 }
