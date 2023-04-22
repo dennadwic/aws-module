@@ -28,7 +28,7 @@ resource "aws_instance" "jenkins" {
   connection {
     type = "ssh"
     user = "ubuntu"
-    private_key = file("D:/StudiDevOps/AWS/SSH/aws-key")
+    private_key = file("/home/bhewe/.ssh/aws-key")
     host = aws_instance.jenkins.public_ip
   }
 
@@ -46,10 +46,6 @@ resource "aws_instance" "jenkins" {
     ]
   }
 
-  provisioner "local-exec" {
-    command = "ansible-playbook jenkins.yml -i /ansible/inventory --private-key=D:/StudiDevOps/AWS/SSH/aws-key"
-  }
-
   tags = {
     Name = "Jenkins"
   }
@@ -57,9 +53,18 @@ resource "aws_instance" "jenkins" {
 
 #Generate inventory file
 resource "local_file" "inventory" {
-  filename = "../ansible/inventory"
+  filename = "/home/bhewe/aws-module/ansible/inventory"
   content = <<EOF
-  [jenkins]
-  ${aws_instance.jenkins.public_ip}
+[jenkins]
+${aws_instance.jenkins.public_ip}
+
+[jenkins:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_ssh_private_key_file=~/.ssh/aws-key.pem
+ansible_user=ubuntu
   EOF
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i /home/bhewe/aws-module/ansible/inventory /home/bhewe/aws-module/ansible/jenkins/jenkins.yaml --private-key=/home/bhewe/.ssh/aws-key.pem"
+  }
 }

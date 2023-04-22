@@ -1,7 +1,19 @@
---- 
+---
 - hosts: jenkins
-  become: yes 
+  become: yes
   tasks:
+  - name: Import Jenkins GPG Key
+    apt_key:
+      url: "https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key"
+      state: present
+    become: yes
+
+  - name: Add Jenkins repository
+    apt_repository:
+      repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+      state: present
+    become: yes
+
   - name: Update apt package cache
     apt:
       update_cache: yes
@@ -12,16 +24,6 @@
       name: openjdk-8-jdk
       state: present
 
-  - name: Add Jenkins repository
-    apt_repository:
-      repo: "deb https://pkg.jenkins.io/debian binary/"
-      state: present
-
-  - name: Import Jenkins GPG Key
-    apt_key:
-        url: "https://pkg.jenkins.io/debian/jenkins.io.key"
-        state: present
-
   - name: Install Jenkins
     apt:
       name: jenkins
@@ -30,4 +32,5 @@
   - name: Start Jenkins Service
     service:
       name: jenkins
+      enabled: true
       state: started

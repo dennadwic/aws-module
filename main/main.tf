@@ -9,14 +9,14 @@ terraform {
 
 provider "aws" {
   region                   = "ap-southeast-3"
-  shared_credentials_files = ["D:/StudiDevOps/AWS/.aws/credentials"]
+  shared_credentials_files = ["/home/bhewe/.aws/credentials"]
   profile                  = "default"
 }
 
 locals {
   ssh_user          = "ubuntu"
   key_name          = "aws-key"
-  private_key_path  = "D:/StudiDevOps/AWS/SSH/aws-key"
+  private_key_path  = "/home/bhewe/.ssh/aws-key"
 }
 
 module "jenkins-vpc" {
