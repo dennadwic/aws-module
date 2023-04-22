@@ -15,11 +15,11 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "jenkins" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.aws_instance
-  key_name      = var.key_name
-  vpc_security_group_ids = var.jenkins_security_group
-  subnet_id     = var.jenkins_public_subnet
+  ami                     = data.aws_ami.ubuntu.id
+  instance_type           = var.aws_instance
+  key_name                = var.key_name
+  vpc_security_group_ids  = var.security_group
+  subnet_id               = var.development_public_subnet
 
   root_block_device {
     volume_size = "10"
@@ -47,7 +47,7 @@ resource "aws_instance" "jenkins" {
   }
 
   tags = {
-    Name = "Jenkins"
+    Name = "${var.name}"
   }
 }
 

@@ -7,10 +7,14 @@ variable "aws_instance" {
   type = string
 }
 
-variable "jenkins_security_group" {
+variable "security_group" {
   type = list(string)
 }
 
-variable "jenkins_public_subnet" {
+variable "development_public_subnet" {
+  type = string
+}
+
+variable "name" {
   type = string
 }

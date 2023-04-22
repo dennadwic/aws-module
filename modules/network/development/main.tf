@@ -1,16 +1,16 @@
-resource "aws_internet_gateway" "jenkins-igw" {
-  vpc_id = var.jenkins_vpc
+resource "aws_internet_gateway" "igw" {
+  vpc_id = var.development_vpc
   tags = {
-    Name = "jenkins-igw"
+    Name = "${var.name}-igw"
   }
 }
 
 resource "aws_route_table" "public-RT" {
-  vpc_id = var.jenkins_vpc
+  vpc_id = var.development_vpc
 
   route {
     cidr_block = var.cidr_block_public_RT
-    gateway_id = aws_internet_gateway.jenkins-igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   tags = {
@@ -19,7 +19,7 @@ resource "aws_route_table" "public-RT" {
 }
 
 resource "aws_route_table_association" "public" {
-  subnet_id      = var.jenkins_public_subnet
+  subnet_id      = var.development_public_subnet
   route_table_id = aws_route_table.public-RT.id
 }
 
@@ -27,18 +27,18 @@ resource "aws_eip" "nat_gateway" {
   vpc = true
 }
 
-resource "aws_nat_gateway" "jenkins-nat" {
-  connectivity_type = var.connectivity_type_jenkins_nat
-  allocation_id = aws_eip.nat_gateway.id
-  subnet_id     = var.jenkins_public_subnet
+resource "aws_nat_gateway" "nat" {
+  connectivity_type = var.connectivity_type_nat
+  allocation_id     = aws_eip.nat_gateway.id
+  subnet_id         = var.development_public_subnet
 
   tags = {
-    Name = "jenkins-nat"
+    Name = "${var.name}-nat"
   }
 }
 
 resource "aws_security_group" "ssh-allowed" {
-  vpc_id = var.jenkins_vpc
+  vpc_id = var.development_vpc
 
   egress {
     from_port = 0
@@ -69,6 +69,6 @@ resource "aws_security_group" "ssh-allowed" {
   } 
 
   tags = {
-    Name = "jenkins-firewall"
+    Name = "${var.name}-firewall"
   }
 }
