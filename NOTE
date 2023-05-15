@@ -1,0 +1,12 @@
+script untuk bypass fingeprint = export ANSIBLE_HOST_KEY_CHECKING=False
+
+- nginx conf j2 original
+server {
+  listen 80;
+  listen [::]:80;
+  server_name {{ domain }};
+  root /var/www/{{ domain }};
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}

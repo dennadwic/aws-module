@@ -1,3 +1,7 @@
+output "webserver_ip_public" {
+  value = module.webserver.ip_public
+}
+
 # output "jenkins_vpc" {
 #   value = module.main.jenkins_vpc
 # }
